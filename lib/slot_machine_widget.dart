@@ -1,14 +1,20 @@
 import 'dart:async';
-import 'dart:math';
-
+import 'package:annimation_slot_machine/domain/blocs/slot_machine_view_cubit.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart' show timeDilation;
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 const duration = Duration(milliseconds: 1000);
 const int _secondsStart = 3;
 
 class SlotMAchineWidget extends StatefulWidget {
   const SlotMAchineWidget({super.key});
+
+  static Widget create() {
+    return BlocProvider<SlotMachineCubit>(
+      create: (_) => SlotMachineCubit(),
+      child: const SlotMAchineWidget(),
+    );
+  }
 
   @override
   State<SlotMAchineWidget> createState() => _SlotMAchineWidgetState();
@@ -17,22 +23,16 @@ class SlotMAchineWidget extends StatefulWidget {
 class _SlotMAchineWidgetState extends State<SlotMAchineWidget>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controlller;
-  bool jackpot = false;
   Timer? _timer;
   int _start = _secondsStart;
-  final Random random = new Random();
-  final List<int> index = [
-    1,
-    1,
-    1,
-  ];
 
   void startTimer() {
     const oneSec = Duration(seconds: 1);
+    final cubit = context.read<SlotMachineCubit>();
     _timer = Timer.periodic(
       oneSec,
-      (Timer timer) {
-        changeIndex();
+          (Timer timer) {
+        cubit.changeIndex();
         if (_start == 0) {
           setState(() {
             timer.cancel();
@@ -51,61 +51,44 @@ class _SlotMAchineWidgetState extends State<SlotMAchineWidget>
   @override
   void initState() {
     super.initState();
+    final cubit = context.read<SlotMachineCubit>();
     _controlller = AnimationController(vsync: this, duration: duration);
     _controlller.addListener(() {
       if (_controlller.isCompleted) {
-        print("${index[0]}-- ${index[1]}-- ${index[2]}");
-        if (index[0] == index[1] && index[1] == index[2]) {
-          setState(() {
-            jackpot = true;
-          });
-          print('JACK: $jackpot');
-          showDialog<String>(
-            context: context,
-            builder: (BuildContext context) => AlertDialog(
-              title: const Text('Внимание!'),
-              content: const Text('Вы выиграли!'),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () => Navigator.pop(context, 'OK'),
-                  child: const Text('OK'),
-                ),
-              ],
-            ),
-          );
-        }
+        cubit.winOrLoose(context);
       }
     });
   }
 
-  void changeIndex() {
-    index[0] = random.nextInt(5);
-    index[1] = random.nextInt(5);
-    index[2] = random.nextInt(5);
-  }
-
   @override
   Widget build(BuildContext context) {
+    final cubit = context.watch<SlotMachineCubit>();
+    final index = cubit.state.index;
+    final isAnimation = cubit.state.isNotRunAnimation;
     return Scaffold(
       appBar: AppBar(),
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          FloatingActionButton(
-            onPressed: () {
-              setState(() {
-                jackpot = false;
-                if (_controlller.isCompleted) {
-                  _controlller.stop(canceled: true);
-                  _controlller.reset();
-                  _start = _secondsStart;
-                }
-                _controlller.repeat();
-                startTimer();
-                changeIndex();
-              });
-            },
-            child: const Icon(Icons.play_arrow),
+          Visibility(
+            visible: isAnimation,
+            child: FloatingActionButton(
+              onPressed: () {
+                setState(() {
+                  if (_controlller.isCompleted) {
+                    _controlller.stop(canceled: true);
+                    _controlller.reset();
+                    _start = _secondsStart;
+                  }
+                  _controlller.repeat();
+                  cubit.changeIsAnimationRun();
+                  startTimer();
+                  cubit.changeIndex();
+                });
+              },
+              backgroundColor: Color.fromARGB(255, 186, 23, 12),
+              child: const Text("START"),
+            ),
           ),
         ],
       ),
@@ -126,9 +109,94 @@ class _SlotMAchineWidgetState extends State<SlotMAchineWidget>
                 ],
               ),
             ),
+            const SizedBox(
+              height: 10,
+            ),
+            const BalanceWidget(),
+            const SizedBox(
+              height: 10,
+            ),
+            const BettingWidget(),
           ],
         ),
       ),
+    );
+  }
+}
+
+class BalanceWidget extends StatelessWidget {
+  const BalanceWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final cubit = context.watch<SlotMachineCubit>();
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text("Баланс:${cubit.state.currentBalance}"),
+        TextButton(
+          onPressed: () => showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => AlertDialog(
+              title: const Text('Окно пополнения баланса!'),
+              content: SizedBox(
+                width: 100,
+                child: TextField(
+                  decoration: const InputDecoration(
+                      labelText: 'Ваша ставка', border: OutlineInputBorder()),
+                  onChanged: cubit.topUpBalance,
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.pop(context, 'OK'),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          ),
+          child: const Text('Пополнить баланс'),
+        ),
+      ],
+    );
+  }
+}
+
+class BettingWidget extends StatelessWidget {
+  const BettingWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final cubit = context.watch<SlotMachineCubit>();
+    final isAnimation = cubit.state.isNotRunAnimation;
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Текущая ставка:${cubit.state.bet}"),
+            const SizedBox(
+              width: 5,
+            ),
+            SizedBox(
+              width: 160,
+              child: TextField(
+                enabled: isAnimation,
+                decoration: const InputDecoration(
+                    isDense: true,
+                    contentPadding: EdgeInsets.all(10),
+                    labelText: 'Ваша ставка',
+                    border: OutlineInputBorder()),
+                onChanged: cubit.changeBet,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 5,
+        ),
+        Text("Возможный выигрыш:${cubit.state.bet * cubit.state.rate}")
+      ],
     );
   }
 }
@@ -166,9 +234,9 @@ class MyIconPainter extends CustomPainter {
   late final Animation<double> dotMove3;
 
   MyIconPainter(
-    this.controller,
-    this.index,
-  ) {
+      this.controller,
+      this.index,
+      ) {
     dotGrow = Tween<double>(
       begin: 0.0,
       end: 1.0,
@@ -205,10 +273,9 @@ class MyIconPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final centerX = size.width / 2;
-    final centerY = size.height / 2;
     final radiusGrow = dotGrow.value * 20;
     final radiusDestroy = dotDestroy.value * 20;
-    List colors = [
+    List colors = const [
       Colors.red,
       Colors.green,
       Colors.yellow,
