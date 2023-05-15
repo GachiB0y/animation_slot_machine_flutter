@@ -6,21 +6,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 const duration = Duration(milliseconds: 1000);
 const int _secondsStart = 3;
 
-class SlotMAchineWidget extends StatefulWidget {
-  const SlotMAchineWidget({super.key});
+class SlotMachineWidget extends StatefulWidget {
+  const SlotMachineWidget({super.key});
 
   static Widget create() {
     return BlocProvider<SlotMachineCubit>(
       create: (_) => SlotMachineCubit(),
-      child: const SlotMAchineWidget(),
+      child: const SlotMachineWidget(),
     );
   }
 
   @override
-  State<SlotMAchineWidget> createState() => _SlotMAchineWidgetState();
+  State<SlotMachineWidget> createState() => _SlotMachineWidgetState();
 }
 
-class _SlotMAchineWidgetState extends State<SlotMAchineWidget>
+class _SlotMachineWidgetState extends State<SlotMachineWidget>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controlller;
   Timer? _timer;
@@ -86,7 +86,7 @@ class _SlotMAchineWidgetState extends State<SlotMAchineWidget>
                   cubit.changeIndex();
                 });
               },
-              backgroundColor: Color.fromARGB(255, 186, 23, 12),
+              backgroundColor: const Color.fromARGB(255, 186, 23, 12),
               child: const Text("START"),
             ),
           ),
