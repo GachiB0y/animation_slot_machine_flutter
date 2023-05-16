@@ -9,13 +9,6 @@ const int _secondsStart = 3;
 class SlotMachineWidget extends StatefulWidget {
   const SlotMachineWidget({super.key});
 
-  static Widget create() {
-    return BlocProvider<SlotMachineCubit>(
-      create: (_) => SlotMachineCubit(),
-      child: const SlotMachineWidget(),
-    );
-  }
-
   @override
   State<SlotMachineWidget> createState() => _SlotMachineWidgetState();
 }
@@ -31,7 +24,7 @@ class _SlotMachineWidgetState extends State<SlotMachineWidget>
     final cubit = context.read<SlotMachineCubit>();
     _timer = Timer.periodic(
       oneSec,
-          (Timer timer) {
+      (Timer timer) {
         cubit.changeIndex();
         if (_start == 0) {
           setState(() {
@@ -66,7 +59,12 @@ class _SlotMachineWidgetState extends State<SlotMachineWidget>
     final index = cubit.state.index;
     final isAnimation = cubit.state.isNotRunAnimation;
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Center(
+          child: Text("Slot Machine by Volkov"),
+        ),
+        automaticallyImplyLeading: false,
+      ),
       floatingActionButton: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -234,9 +232,9 @@ class MyIconPainter extends CustomPainter {
   late final Animation<double> dotMove3;
 
   MyIconPainter(
-      this.controller,
-      this.index,
-      ) {
+    this.controller,
+    this.index,
+  ) {
     dotGrow = Tween<double>(
       begin: 0.0,
       end: 1.0,

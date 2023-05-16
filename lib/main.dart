@@ -1,8 +1,12 @@
-import 'package:annimation_slot_machine/my_app.dart';
+import 'package:annimation_slot_machine/factories/di_container.dart';
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
+abstract class AppFactory {
+  Widget makeApp();
 }
 
-
+final appFactory = makeFactoryApp();
+void main() {
+  final app = appFactory.makeApp();
+  runApp(app);
+}

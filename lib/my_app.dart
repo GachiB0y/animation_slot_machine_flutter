@@ -1,8 +1,15 @@
-import 'package:annimation_slot_machine/slot_machine_widget.dart';
+import 'package:annimation_slot_machine/ui/navigation/main_navigation_route_names.dart';
+import 'package:annimation_slot_machine/ui/widget/slot_machine_widget.dart';
 import 'package:flutter/material.dart';
 
+abstract class MainNavigation {
+  Map<String, Widget Function(BuildContext)> makeRoute();
+  Route<Object> onGenerateRoute(RouteSettings settings);
+}
+
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final MainNavigation mainNavigation;
+  const MyApp({super.key, required this.mainNavigation});
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +18,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const SlotMachineWidget(),
+      initialRoute: MainNavigationRouteNames.mainScreen,
+      routes: mainNavigation.makeRoute(),
+      onGenerateRoute: mainNavigation.onGenerateRoute,
+      //home: const SlotMachineWidget(),
     );
   }
 }
