@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:annimation_slot_machine/domain/blocs/slot_machine_view_cubit.dart';
+import 'package:annimation_slot_machine/ui/navigation/main_navigation_route_names.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -70,22 +71,38 @@ class _SlotMachineWidgetState extends State<SlotMachineWidget>
         children: [
           Visibility(
             visible: isAnimation,
-            child: FloatingActionButton(
-              onPressed: () {
-                setState(() {
-                  if (_controlller.isCompleted) {
-                    _controlller.stop(canceled: true);
-                    _controlller.reset();
-                    _start = _secondsStart;
-                  }
-                  _controlller.repeat();
-                  cubit.changeIsAnimationRun();
-                  startTimer();
-                  cubit.changeIndex();
-                });
-              },
-              backgroundColor: const Color.fromARGB(255, 186, 23, 12),
-              child: const Text("START"),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 24.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  FloatingActionButton(
+                    onPressed: () {
+                      Navigator.of(context)
+                          .pushNamed(MainNavigationRouteNames.openCaseScreen);
+                    },
+                    backgroundColor: Colors.blue,
+                    child: const Text("Next"),
+                  ),
+                  FloatingActionButton(
+                    onPressed: () {
+                      setState(() {
+                        if (_controlller.isCompleted) {
+                          _controlller.stop(canceled: true);
+                          _controlller.reset();
+                          _start = _secondsStart;
+                        }
+                        _controlller.repeat();
+                        cubit.changeIsAnimationRun();
+                        startTimer();
+                        cubit.changeIndex();
+                      });
+                    },
+                    backgroundColor: const Color.fromARGB(255, 186, 23, 12),
+                    child: const Text("START"),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

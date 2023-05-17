@@ -1,5 +1,6 @@
 import 'package:annimation_slot_machine/domain/blocs/slot_machine_view_cubit.dart';
 import 'package:annimation_slot_machine/my_app.dart';
+import 'package:annimation_slot_machine/ui/widget/open_case_scgo_widget.dart';
 import 'package:annimation_slot_machine/ui/widget/slot_machine_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:annimation_slot_machine/main.dart';
@@ -36,5 +37,10 @@ class ScreenFactoryDefault implements ScreenFactory {
       create: (_) => SlotMachineCubit(),
       child: const SlotMachineWidget(),
     );
+  }
+
+  @override
+  Widget makeCaseCsGoScreen() {
+    return OpenCaseCsGoWidget();
   }
 }

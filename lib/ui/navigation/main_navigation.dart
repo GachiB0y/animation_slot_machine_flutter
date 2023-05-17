@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 abstract class ScreenFactory {
   Widget makeSlotMachineScreen();
+  Widget makeCaseCsGoScreen();
 }
 
 class MainNavigationDefault implements MainNavigation {
@@ -16,6 +17,8 @@ class MainNavigationDefault implements MainNavigation {
       <String, Widget Function(BuildContext)>{
         MainNavigationRouteNames.mainScreen: (_) =>
             screenFactory.makeSlotMachineScreen(),
+        MainNavigationRouteNames.openCaseScreen: (_) =>
+            screenFactory.makeCaseCsGoScreen(),
       };
 
   @override
