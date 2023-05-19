@@ -1,5 +1,4 @@
 import 'package:annimation_slot_machine/ui/navigation/main_navigation_route_names.dart';
-import 'package:annimation_slot_machine/ui/widget/slot_machine_widget.dart';
 import 'package:flutter/material.dart';
 
 abstract class MainNavigation {

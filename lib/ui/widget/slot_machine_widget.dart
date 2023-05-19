@@ -77,6 +77,7 @@ class _SlotMachineWidgetState extends State<SlotMachineWidget>
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   FloatingActionButton(
+                    heroTag: 'Next',
                     onPressed: () {
                       Navigator.of(context)
                           .pushNamed(MainNavigationRouteNames.openCaseScreen);
@@ -85,6 +86,7 @@ class _SlotMachineWidgetState extends State<SlotMachineWidget>
                     child: const Text("Next"),
                   ),
                   FloatingActionButton(
+                    heroTag: 'Start',
                     onPressed: () {
                       setState(() {
                         if (_controlller.isCompleted) {

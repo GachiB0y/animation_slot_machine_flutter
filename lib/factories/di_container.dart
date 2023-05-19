@@ -1,3 +1,4 @@
+import 'package:annimation_slot_machine/domain/blocs/open_case_scgo_view_cubit.dart';
 import 'package:annimation_slot_machine/domain/blocs/slot_machine_view_cubit.dart';
 import 'package:annimation_slot_machine/my_app.dart';
 import 'package:annimation_slot_machine/ui/widget/open_case_scgo_widget.dart';
@@ -41,6 +42,9 @@ class ScreenFactoryDefault implements ScreenFactory {
 
   @override
   Widget makeCaseCsGoScreen() {
-    return OpenCaseCsGoWidget();
+    return BlocProvider<OpenCaseCubit>(
+      create: (_) => OpenCaseCubit(),
+      child: OpenCaseCsGoWidget(),
+    );
   }
 }
