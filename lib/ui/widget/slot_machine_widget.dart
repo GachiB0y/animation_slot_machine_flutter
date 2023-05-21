@@ -60,6 +60,7 @@ class _SlotMachineWidgetState extends State<SlotMachineWidget>
     final index = cubit.state.index;
     final isAnimation = cubit.state.isNotRunAnimation;
     return Scaffold(
+       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Center(
           child: Text("Slot Machine by Volkov"),
