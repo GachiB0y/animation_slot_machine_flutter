@@ -2,8 +2,9 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:equatable/equatable.dart';
 
-class SlotMachineViewState {
+class SlotMachineViewState extends Equatable {
   final int rate = 10;
   final int currentBalance;
   final int bet;
@@ -56,6 +57,10 @@ class SlotMachineViewState {
         isNotRunAnimation.hashCode ^
         index.hashCode;
   }
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [currentBalance,bet,jackpot,isNotRunAnimation,index];
 }
 
 class SlotMachineCubit extends Cubit<SlotMachineViewState> {
@@ -154,9 +159,9 @@ class SlotMachineCubit extends Cubit<SlotMachineViewState> {
     final List<int> indexValue = state.index;
     final Random randomValue = state.random;
     final List<int> listIndex = [
-      randomValue.nextInt(5),
-      randomValue.nextInt(5),
-      randomValue.nextInt(5)
+      randomValue.nextInt(3),
+      randomValue.nextInt(3),
+      randomValue.nextInt(3)
     ];
     final newState = state.copyWith(index: listIndex);
     emit(newState);
