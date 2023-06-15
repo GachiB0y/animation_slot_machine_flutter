@@ -1,6 +1,8 @@
 # annimation_slot_machine
 
-A new Flutter project.
+![til](./assets/anamation_exmaple.gif)
+
+Слот машина и рулетка типа CS GO, анимация на Flutter CustomPainter + AnimationController, Cubit, DI:
 
 ## Getting Started
 
